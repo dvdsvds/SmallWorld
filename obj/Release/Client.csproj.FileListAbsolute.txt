@@ -8,3 +8,4 @@ C:\Users\kundr\source\repos\CLIENT\obj\Release\Client.csproj.GenerateResource.ca
 C:\Users\kundr\source\repos\CLIENT\obj\Release\Client.csproj.CoreCompileInputs.cache
 C:\Users\kundr\source\repos\CLIENT\obj\Release\Client.exe
 C:\Users\kundr\source\repos\CLIENT\obj\Release\Client.pdb
+C:\Users\kundr\source\repos\CLIENT\obj\Release\Client.Login.resources

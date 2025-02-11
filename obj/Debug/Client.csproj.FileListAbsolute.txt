@@ -8,3 +8,5 @@ C:\Users\kundr\source\repos\Client\obj\Debug\Client.csproj.CoreCompileInputs.cac
 C:\Users\kundr\source\repos\Client\obj\Debug\Client.exe
 C:\Users\kundr\source\repos\Client\obj\Debug\Client.pdb
 C:\Users\kundr\source\repos\CLIENT\obj\Debug\Client.Chat.resources
+C:\Users\kundr\source\repos\CLIENT\obj\Debug\Client.Login.resources
+C:\Users\kundr\source\repos\CLIENT\obj\Debug\Client.Register.resources
