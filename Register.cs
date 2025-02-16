@@ -150,6 +150,7 @@ namespace Client
             }
             catch(Exception ex)
             {
+
                 MessageBox.Show("Error sending request : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
