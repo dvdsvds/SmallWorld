@@ -1,6 +1,5 @@
-from flask import Flask, json, jsonify, request
-import time
-from db import gun, gc  # db.py에서 gun 함수 가져오기
+from flask import Flask, jsonify, request
+from db import gun  # db.py에서 gun 함수 가져오기
 from cEmail import send_code_email
 import bcrypt
 

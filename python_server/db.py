@@ -1,15 +1,19 @@
 import mysql.connector
 from mysql.connector import Error, pooling
 import bcrypt
+from dotenv import load_dotenv
+import os
+
+load_dotenv(dotenv_path='../config/s.env')
 
 def cp():
     return mysql.connector.pooling.MySQLConnectionPool(
         pool_name="mypool",
         pool_size=10,
-        host='211.197.219.43',
-        user='yeon',
-        password='0735',
-        database='smallWorld'
+        host=os.getenv('db_host'),
+        user=os.getenv('db_user'),
+        password=os.getenv('db_password'),
+        database=os.getenv('db_name')
     )
 
 def gc():

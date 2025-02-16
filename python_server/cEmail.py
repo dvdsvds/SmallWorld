@@ -6,10 +6,14 @@ import string
 import datetime
 import time
 from db import gc
+from dotenv import load_dotenv
+import os
+
+load_dotenv(dotenv_path='../config/s.env')
 
 def send_email(to_email, code):
-    sender = "c130vy@gmail.com"
-    password = "ebax dwsr naxk lqwy"
+    sender = os.getenv('email_sender')
+    password = os.getenv('email_password')
     subject = "인증 코드"
 
     body = f"귀하의 인증 코드: {code}\n코드는 5분 동안 유효합니다."
