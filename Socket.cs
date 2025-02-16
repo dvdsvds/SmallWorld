@@ -9,7 +9,7 @@ namespace Client
 {
     class Socket
     {
-        private string IP = "192.168.50.246";
+        private string IP = Environment.GetEnvironmentVariable("SERVER_IP") ?? "localhost";
         private int PORT = 8080;
 
         public async Task<string> SendMessageAsync(string message)

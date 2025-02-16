@@ -24,3 +24,14 @@ C:\Users\kundr\source\repos\ChatProgram\obj\Debug\Client.pdb
 C:\Users\kundr\source\repos\ChatProgram\bin\Debug\Newtonsoft.Json.dll
 C:\Users\kundr\source\repos\ChatProgram\bin\Debug\Newtonsoft.Json.xml
 C:\Users\kundr\source\repos\ChatProgram\obj\Debug\Client.csproj.Up2Date
+C:\Users\kundr\source\repos\ChatProgram\bin\Debug\DotNetEnv.dll
+C:\Users\kundr\source\repos\ChatProgram\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\kundr\source\repos\ChatProgram\bin\Debug\Microsoft.Extensions.Configuration.dll
+C:\Users\kundr\source\repos\ChatProgram\bin\Debug\Microsoft.Extensions.Primitives.dll
+C:\Users\kundr\source\repos\ChatProgram\bin\Debug\Sprache.dll
+C:\Users\kundr\source\repos\ChatProgram\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\kundr\source\repos\ChatProgram\bin\Debug\Microsoft.Extensions.Configuration.xml
+C:\Users\kundr\source\repos\ChatProgram\bin\Debug\Microsoft.Extensions.Configuration.Abstractions.xml
+C:\Users\kundr\source\repos\ChatProgram\bin\Debug\Microsoft.Extensions.Primitives.xml
+C:\Users\kundr\source\repos\ChatProgram\bin\Debug\Sprache.xml
+C:\Users\kundr\source\repos\ChatProgram\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml

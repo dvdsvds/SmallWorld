@@ -1,0 +1,11 @@
+*.env
+*.config
+Properties
+packages
+.vs
+bin/
+obj/
+packages.config
+*.csproj
+.exe
+.pdb
