@@ -82,6 +82,7 @@
             this.RegisterBtn.TabIndex = 4;
             this.RegisterBtn.Text = "Register";
             this.RegisterBtn.UseVisualStyleBackColor = true;
+            this.RegisterBtn.Click += new System.EventHandler(this.RegisterBtn_Click);
             // 
             // LoginBtn
             // 

@@ -35,9 +35,9 @@
             this.RegisterLabel = new System.Windows.Forms.Label();
             this.VerificationCode = new System.Windows.Forms.TextBox();
             this.SendEmail = new System.Windows.Forms.Button();
-            this.ConfirmCode = new System.Windows.Forms.Button();
-            this.ConfirmUsername = new System.Windows.Forms.Button();
-            this.Done = new System.Windows.Forms.Button();
+            this.Confirm = new System.Windows.Forms.Button();
+            this.CheckUsername = new System.Windows.Forms.Button();
+            this.RegisterDone = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Username
@@ -104,41 +104,41 @@
             this.SendEmail.Text = "Send";
             this.SendEmail.UseVisualStyleBackColor = true;
             // 
-            // ConfirmCode
+            // Confirm
             // 
-            this.ConfirmCode.Location = new System.Drawing.Point(197, 85);
-            this.ConfirmCode.Name = "ConfirmCode";
-            this.ConfirmCode.Size = new System.Drawing.Size(75, 23);
-            this.ConfirmCode.TabIndex = 7;
-            this.ConfirmCode.Text = "Confirm";
-            this.ConfirmCode.UseVisualStyleBackColor = true;
+            this.Confirm.Location = new System.Drawing.Point(197, 85);
+            this.Confirm.Name = "Confirm";
+            this.Confirm.Size = new System.Drawing.Size(75, 23);
+            this.Confirm.TabIndex = 7;
+            this.Confirm.Text = "Confirm";
+            this.Confirm.UseVisualStyleBackColor = true;
             // 
-            // ConfirmUsername
+            // CheckUsername
             // 
-            this.ConfirmUsername.Location = new System.Drawing.Point(196, 31);
-            this.ConfirmUsername.Name = "ConfirmUsername";
-            this.ConfirmUsername.Size = new System.Drawing.Size(75, 23);
-            this.ConfirmUsername.TabIndex = 8;
-            this.ConfirmUsername.Text = "Confirm";
-            this.ConfirmUsername.UseVisualStyleBackColor = true;
+            this.CheckUsername.Location = new System.Drawing.Point(196, 31);
+            this.CheckUsername.Name = "CheckUsername";
+            this.CheckUsername.Size = new System.Drawing.Size(75, 23);
+            this.CheckUsername.TabIndex = 8;
+            this.CheckUsername.Text = "Check";
+            this.CheckUsername.UseVisualStyleBackColor = true;
             // 
-            // Done
+            // RegisterDone
             // 
-            this.Done.Location = new System.Drawing.Point(16, 167);
-            this.Done.Name = "Done";
-            this.Done.Size = new System.Drawing.Size(174, 23);
-            this.Done.TabIndex = 9;
-            this.Done.Text = "Done";
-            this.Done.UseVisualStyleBackColor = true;
+            this.RegisterDone.Location = new System.Drawing.Point(16, 167);
+            this.RegisterDone.Name = "RegisterDone";
+            this.RegisterDone.Size = new System.Drawing.Size(174, 23);
+            this.RegisterDone.TabIndex = 9;
+            this.RegisterDone.Text = "Done";
+            this.RegisterDone.UseVisualStyleBackColor = true;
             // 
             // Register
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(288, 202);
-            this.Controls.Add(this.Done);
-            this.Controls.Add(this.ConfirmUsername);
-            this.Controls.Add(this.ConfirmCode);
+            this.Controls.Add(this.RegisterDone);
+            this.Controls.Add(this.CheckUsername);
+            this.Controls.Add(this.Confirm);
             this.Controls.Add(this.SendEmail);
             this.Controls.Add(this.VerificationCode);
             this.Controls.Add(this.RegisterLabel);
@@ -162,8 +162,8 @@
         private System.Windows.Forms.Label RegisterLabel;
         private System.Windows.Forms.TextBox VerificationCode;
         private System.Windows.Forms.Button SendEmail;
-        private System.Windows.Forms.Button ConfirmCode;
-        private System.Windows.Forms.Button ConfirmUsername;
-        private System.Windows.Forms.Button Done;
+        private System.Windows.Forms.Button Confirm;
+        private System.Windows.Forms.Button CheckUsername;
+        private System.Windows.Forms.Button RegisterDone;
     }
 }
