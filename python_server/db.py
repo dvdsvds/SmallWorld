@@ -9,7 +9,7 @@ def cp():
         host='211.197.219.43',
         user='yeon',
         password='0735',
-        database='Chat'
+        database='smallWorld'
     )
 
 def gc():

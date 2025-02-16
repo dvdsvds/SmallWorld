@@ -8,6 +8,7 @@
 #include <cstring>
 
 #define PORT 8080
+#define SERVER "192.168.50.246"
 
 size_t wcb(void *contents, size_t size, size_t nmemb, std::string *output) {
     size_t ts = size * nmemb;
@@ -24,11 +25,10 @@ void logInfo(const std::string& info) {
     std::cout << "[INFO] " << info << std::endl; 
 }
 
-bool slreq(const std::string& username, const std::string& password, std::string& response) {
+bool hReq(const std::string& endpoint, const std::string& jd, std::string& response) {
     CURL *curl;
     CURLcode res;
-    std::string url = "http://192.168.50.246:5000/login";
-    std::string jd = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
+    std::string url = "http://" SERVER ":5000" + endpoint;
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
     curl = curl_easy_init();
@@ -46,8 +46,10 @@ bool slreq(const std::string& username, const std::string& password, std::string
         res = curl_easy_perform(curl);
 
         if(res != CURLE_OK) {
-            std::cerr << "Request failed : " << curl_easy_strerror(res) << std::endl;
+            logError("Request failed : " + std::string(curl_easy_strerror(res)));
             curl_easy_cleanup(curl);
+            curl_slist_free_all(h);
+            curl_global_cleanup();
             return false;
         }
 
@@ -57,48 +59,7 @@ bool slreq(const std::string& username, const std::string& password, std::string
         curl_slist_free_all(h);
     }
     curl_global_cleanup();
-
     return true;
-}
-
-bool srreq(const std::string& username, const std::string& password) {
-    CURL *curl;
-    CURLcode res;
-
-    std::string url = "http://192.168.50.246:5000/register";
-    std::string jd = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
-
-    curl_global_init(CURL_GLOBAL_DEFAULT);
-    curl = curl_easy_init();
-    if(curl) {
-        struct curl_slist *h = NULL;
-        h = curl_slist_append(h, "Content-Type: application/json");
-
-        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jd.c_str());
-        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, h);
-
-        std::string response;
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, wcb);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
-
-        res = curl_easy_perform(curl);
-
-        if(res != CURLE_OK) {
-            std::cerr << "Request failed : " << curl_easy_strerror(res) << std::endl;
-            curl_easy_cleanup(curl);
-            return false;
-        }
-
-        std::cout << "Res : " << response << std::endl;
-
-        curl_easy_cleanup(curl);
-        curl_slist_free_all(h);
-    }
-    curl_global_cleanup();
-
-    return true;
-
 }
 
 void startSocket() {
@@ -119,16 +80,18 @@ void startSocket() {
 
     if(bind(sSocket, (struct sockaddr*)&sAddr, sizeof(sAddr)) < 0) {
         logError("바인드 실패");
+        close(sSocket);
         return;
     }
 
 
     if(listen(sSocket, 5) < 0) {
         logError("연결 대기 실패");
+        close(sSocket);
         return;
     }
 
-    logInfo("c++ 소켓이 192.168.50.246:" + std::to_string(PORT) + "에서 실행 중");
+    logInfo("소켓이 " SERVER ":" + std::to_string(PORT) + "에서 실행 중");
 
     while(true) {
         cSocket = accept(sSocket, (struct sockaddr*)&cAddr, &addrSize);
@@ -138,23 +101,65 @@ void startSocket() {
         }
 
         char buffer[1024] = {0};
-        recv(cSocket, buffer, 1024, 0);
+        ssize_t bytesReceived = recv(cSocket, buffer, sizeof(buffer) - 1, 0);
+        if(bytesReceived <= 0) {
+            logError("데이터 수신 실패");
+            close(sSocket);
+            continue;
+        }
+
+        buffer[bytesReceived] = '\0';
         std::string req(buffer);
-        logInfo("[LOGIN] " + req);
+        logInfo("[REQ] " + req);
 
         std::string command, username, password;
         std::istringstream iss(req);
         iss >> command >> username >> password;
 
+        std::string endpoint;
         std::string flaskRes;
+        std::string jd;
         if(command == "LOGIN") {
-            slreq(username, password, flaskRes);
+            endpoint = "/login";
+             jd = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
         }
         else if(command == "REGISTER") {
-            // todo
+            endpoint = "/register";
+             jd = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
+        }
+        else if(command == "CHECK-USERNAME") {
+            endpoint = "/register/check-username";
+            jd = "{\"username\":\"" + username + "\"}";
+        } 
+        else if(command == "SEND-EMAIL") {
+            endpoint = "/register/send-email";
+            std::string email = username;
+            jd = "{\"email\":\"" + email + "\"}";
+        } 
+
+        else {
+            flaskRes = "INVALID COMMAND";
+            send(cSocket, flaskRes.c_str(), flaskRes.size(), 0);
+            close(cSocket);
+            continue;
         }
 
-        send(cSocket, flaskRes.c_str(), flaskRes.size(), 0);
+        if(hReq(endpoint, jd, flaskRes)) {
+            size_t totalSent = 0;
+            while(totalSent < flaskRes.size()) {
+                ssize_t sent = send(cSocket, flaskRes.c_str() + totalSent, flaskRes.size() - totalSent, 0);
+                if(sent <= 0) {
+                    logError("데이터 전송 실패");
+                    break;
+                }
+                totalSent += sent;
+            }
+        }
+        else {
+            flaskRes = "ERROR";
+            send(cSocket, flaskRes.c_str(), flaskRes.size(), 0);
+        }
+
         close(cSocket);
     }
     close(sSocket);
