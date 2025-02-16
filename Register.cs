@@ -156,6 +156,7 @@ namespace Client
 
         private async void SendEmail_Click(object sender, EventArgs e)
         {
+
             string email = Email.Text;
             if(string.IsNullOrEmpty(email) || email == "Email")
             {
