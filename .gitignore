@@ -16,6 +16,9 @@ packages.config
 
 # 프로젝트 파일
 *.csproj
+*.resx
+*.csproj.user
+*.sln
 
 # 실행 파일과 디버깅 파일
 *.exe
