@@ -1,11 +1,22 @@
+# 환경 변수 파일 (예: .env, .config)
 *.env
 *.config
-Properties
-packages
+
+# Visual Studio 관련 파일/폴더
 .vs
+Properties
+
+# 빌드 결과물 폴더 (컴파일된 파일들)
 bin/
 obj/
+
+# 패키지 관련 파일
+packages
 packages.config
+
+# 프로젝트 파일
 *.csproj
-.exe
-.pdb
+
+# 실행 파일과 디버깅 파일
+*.exe
+*.pdb
