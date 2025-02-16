@@ -103,6 +103,7 @@
             this.SendEmail.TabIndex = 6;
             this.SendEmail.Text = "Send";
             this.SendEmail.UseVisualStyleBackColor = true;
+            this.SendEmail.Click += new System.EventHandler(this.SendEmail_Click);
             // 
             // Confirm
             // 
@@ -121,6 +122,7 @@
             this.CheckUsername.TabIndex = 8;
             this.CheckUsername.Text = "Check";
             this.CheckUsername.UseVisualStyleBackColor = true;
+            this.CheckUsername.Click += new System.EventHandler(this.CheckUsername_Click);
             // 
             // RegisterDone
             // 

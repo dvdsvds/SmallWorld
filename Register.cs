@@ -25,6 +25,8 @@ namespace Client
             Password.LostFocus += Password_LostFocus;
             ConfirmPassword.GotFocus += ConfirmPassword_GotFocus;
             ConfirmPassword.LostFocus += ConfirmPassword_LostFocus;
+
+
         }
 
         private void Username_GotFocus(object sender, EventArgs e)
@@ -113,6 +115,73 @@ namespace Client
             {
                 ConfirmPassword.Text = "Confirm Password";
                 ConfirmPassword.ForeColor = Color.Gray;
+            }
+        }
+
+        private async void CheckUsername_Click(object sender, EventArgs e)
+        {
+            string username = Username.Text;
+            if(string.IsNullOrEmpty(username) || username == "Username")
+            {
+                MessageBox.Show("Username을 입력해주세요.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            try
+            {
+                Socket s = new Socket();
+                string message = $"CHECK-USERNAME {username}";
+                string res = await s.SendMessageAsync(message);
+
+                var resObj = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(res);
+
+                if(resObj.status == "success" && resObj.message == "A") 
+                {
+                    MessageBox.Show("사용가능한 이름입니다.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else if(resObj.status == "error" && resObj.message == "T")
+                {
+                    MessageBox.Show("사용중인 이름입니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else if(resObj.status == "error" && resObj.message == "UR")
+                {
+                    MessageBox.Show("Username은 필수입니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Error sending request : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private async void SendEmail_Click(object sender, EventArgs e)
+        {
+            string email = Email.Text;
+            if(string.IsNullOrEmpty(email) || email == "Email")
+            {
+                MessageBox.Show("이메일을 입력해주세요.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            try
+            {
+                Socket s = new Socket();
+                string message = $"SEND-EMAIL {email}";
+                string res = await s.SendMessageAsync(message);
+
+                var resObj = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(res);
+                if(resObj.status == "success" && resObj.message == "SE")
+                {
+                    MessageBox.Show("이메일로 인증번호가 전송되었습니다.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else if(resObj.status == "error" && resObj.message == "FS")
+                {
+                    MessageBox.Show("인증번호 전송에 실패했습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Error sending request : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
