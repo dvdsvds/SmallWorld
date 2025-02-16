@@ -3,3 +3,5 @@
 *.log
 *.pdb
 server
+myenv/
+__pycache__/
