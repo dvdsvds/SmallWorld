@@ -8,8 +8,9 @@
 #include <cstring>
 
 #define PORT 8080
-#define SERVER "192.168.50.246"
 
+
+const char* ip = std::getenv("IP");
 size_t wcb(void *contents, size_t size, size_t nmemb, std::string *output) {
     size_t ts = size * nmemb;
     output->append((char*)contents, ts);
@@ -28,7 +29,15 @@ void logInfo(const std::string& info) {
 bool hReq(const std::string& endpoint, const std::string& jd, std::string& response) {
     CURL *curl;
     CURLcode res;
-    std::string url = "http://" SERVER ":5000" + endpoint;
+    std::string url = "http://";
+    if(ip != nullptr) {
+        url += ip;
+    }
+    else {
+        logError("IP 환경 변수가 설정되지 않았습니다.");
+        return false;
+    }
+    url += ":5000" + endpoint;
 
     curl_global_init(CURL_GLOBAL_DEFAULT);
     curl = curl_easy_init();
@@ -75,7 +84,15 @@ void startSocket() {
 
     memset(&sAddr, 0, sizeof(sAddr));
     sAddr.sin_family = AF_INET;
-    inet_pton(AF_INET, "192.168.50.246", &sAddr.sin_addr);
+
+    if(ip != nullptr) {
+        inet_pton(AF_INET, "192.168.50.246", &sAddr.sin_addr);
+    }
+    else {
+        logError("IP 환경 변수가 설정되지 않았습니다.");
+        return;
+    }
+
     sAddr.sin_port = htons(PORT);
 
     if(bind(sSocket, (struct sockaddr*)&sAddr, sizeof(sAddr)) < 0) {
@@ -91,7 +108,7 @@ void startSocket() {
         return;
     }
 
-    logInfo("소켓이 " SERVER ":" + std::to_string(PORT) + "에서 실행 중");
+    logInfo("소켓이 " + std::string(ip) + ":" + std::to_string(PORT) + "에서 실행 중");
 
     while(true) {
         cSocket = accept(sSocket, (struct sockaddr*)&cAddr, &addrSize);
