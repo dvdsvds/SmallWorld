@@ -15,7 +15,6 @@ size_t wcb(void *contents, size_t size, size_t nmemb, std::string *output) {
     size_t ts = size * nmemb;
     output->append((char*)contents, ts);
     return ts;
-
 }
 
 void logError(const std::string& err) {
