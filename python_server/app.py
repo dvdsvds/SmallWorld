@@ -1,75 +1,67 @@
-from flask import Flask, jsonify, request
-from db import gun  # db.py에서 gun 함수 가져오기
-from cEmail import send_code_email
 import bcrypt
+from flask import Flask, jsonify, request
+from db import get_user_name 
+from cEmail import send_code_email
 
 app = Flask(__name__)
 
-
-# 로그인 API
+# login API
 @app.route('/login', methods=['POST'])
 def login():
     data = request.json
+    
+    if data is None:
+        print("Error : 'data' is None")
+        return jsonify({"status": "error", "message": "invalid request"}), 400
+
     username = data['username']
     password = data['password']
-    # DB에서 사용자 정보 조회
-    user = gun(username)
+    user = get_user_name(username)
 
-    # 사용자 정보가 없을 경우 처리
+    if not username or not password:
+        return jsonify({"status": "error", "message": "missing credentials"}), 400
+        
     if user is None or len(user) == 0:
-        return jsonify({"status": "error", "message": "UDNE"}), 404
+        return jsonify({"status": "error", "message": "user does not exist"}), 404
 
-    stored_pwd = user[0][2]  # 비밀번호는 3번째 인덱스 (id, username, password)
+    stored_pwd = user[0][1]  
     
     # 비밀번호 확인
     if bcrypt.checkpw(password.encode('utf-8'), stored_pwd.encode('utf-8')):
-        return jsonify({"status": "success", "message": "LS"}), 200
+        return jsonify({"status": "success", "message": "login successful"}), 200
     else:
-        return jsonify({"status": "error", "message": "IP"}), 401
+        return jsonify({"status": "error", "message": "invalid password"}), 401
 
-# 회원가입 중 username 중복확인 API
+# username check API
 @app.route('/register/check-username', methods=['POST'])
 def check_username():
-    data = request.json
+    data = request.get_json()
     username = data.get('username')
 
     if not username:
-        return jsonify({"status": "error", "message": "UR"}), 200
+        return jsonify({"status": "error", "message": "user required"}), 200
 
-    user = gun(username)
+    user = get_user_name(username)
 
     if user is None or len(user) == 0:
-        return jsonify({"status": "success", "message": "A"}), 200
+        return jsonify({"status": "success", "message": "available"}), 200
     else:
-        return jsonify({"status": "error", "message": "T"}), 400
+        return jsonify({"status": "error", "message": "taken"}), 400
 
-# 회원가입 중 이메일 확인(send code) API
+# send verification code API
 @app.route('/register/send-email', methods=['POST'])
 def send_code():
-    email = request.json.get('email')
+    data = request.get_json()
+    email = data.get('email')
 
     if not email:
-        return jsonify({"status": "error", "message": "PE"}), 400
+        return jsonify({"status": "error", "message": "please enter an email"}), 400
 
     result = send_code_email(email)
     if result:
-        return jsonify({"status": "success", "message": "SE"}), 200
+        return jsonify({"status": "success", "message": "send code to email"}), 200
     else:
-        return jsonify({"status": "error", "message": "FS"}), 500
-
-    
-# 회원가입 API
-@app.route('/register', methods=['POST'])
-def register():
-    data = request.json
-    username = data['username']
-    password = data['password']
-
-    # DB에 사용자 정보 삽입
-    from db import iu  # db.py에서 iu 함수 가져오기
-    iu(username, password)
-
-    return jsonify({"status": "success", "message": "회원가입 성공"}), 201
+        return jsonify({"status": "error", "message": "failed to send email"}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

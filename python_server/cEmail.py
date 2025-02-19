@@ -1,19 +1,22 @@
 import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 import random
 import string
 import datetime
 import time
-from db import gc
-from dotenv import load_dotenv
 import os
+from db import get_connection
+from dotenv import load_dotenv
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 load_dotenv(dotenv_path='../config/s.env')
 
 def send_email(to_email, code):
     sender = os.getenv('email_sender')
     password = os.getenv('email_password')
+
+    if not sender or not password:
+        return ValueError("환경 변수 'email_sender' 또는 'email_password'가 설정되지 않았습니다")
     subject = "인증 코드"
 
     body = f"귀하의 인증 코드: {code}\n코드는 5분 동안 유효합니다."
@@ -40,11 +43,11 @@ def create_code():
     return ''.join(random.choices(string.digits, k=6))
 
 def save_code(email, code):
-    conn = gc()  # db.py의 gc() 함수로 커넥션 가져오기
+    conn = get_connection()  
     if conn is not None:
         cursor = conn.cursor()
         expiration_time = time.time() + 300
-        expiration_datetime = datetime.datetime.utcfromtimestamp(expiration_time).strftime('%Y-%m-%d %H:%M:%S') # 5분 후 만료
+        expiration_datetime = datetime.datetime.fromtimestamp(expiration_time, tz=datetime.timezone.utc).strftime('%Y-%m-%d %H:%M:%S')
         cursor.execute("""
             INSERT INTO email_code (email, code, expiration_time)
             VALUES (%s, %s, %s)
