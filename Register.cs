@@ -12,6 +12,10 @@ namespace Client
 {
     public partial class Register : Form
     {
+        private Socket s = new Socket();
+        private string message;
+        private string res;
+        private dynamic resObj;
         public Register()
         {
             InitializeComponent();
@@ -25,76 +29,125 @@ namespace Client
             Password.LostFocus += Password_LostFocus;
             ConfirmPassword.GotFocus += ConfirmPassword_GotFocus;
             ConfirmPassword.LostFocus += ConfirmPassword_LostFocus;
+        }
 
+        private async Task HandleMsgAsync(string message)
+        {
+            try
+            {
+                res = await s.SendMessageAsync(message);
+                resObj = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(res);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Error sending request : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
+        private void HandleResponse(string condition, string successMsg, string errorMsg)
+        {
+            if (resObj?.status == "success" && resObj?.message == condition)
+            {
+                MessageBox.Show(successMsg, "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else if (resObj.status == "error")
+            {
+                MessageBox.Show(errorMsg, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                MessageBox.Show("알 수 없는 오류가 발생했습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private async void CheckUsername_Click(object sender, EventArgs e)
+        {
+            string username = Username.Text;
+            if (string.IsNullOrEmpty(username) || username == "Username")
+            {
+                MessageBox.Show("Username을 입력해주세요.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            message = $"CHECK-USERNAME {username}";
+            await HandleMsgAsync(message);
+
+            HandleResponse("available", "사용 가능한 이름입니다.", "사용중인 이름입니다.");
+        }
+
+        private async void SendEmail_Click(object sender, EventArgs e)
+        {
+
+            string email = Email.Text;
+            if (string.IsNullOrEmpty(email) || email == "Email")
+            {
+                MessageBox.Show("이메일을 입력해주세요.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            message = $"SEND-EMAIL {email}";
+            await HandleMsgAsync(message);
+
+            HandleResponse("send code to email", "이메일로 인증번호가 전송되었습니다.", "인증번호 전송에 실패했습니다.");
         }
 
         private void Username_GotFocus(object sender, EventArgs e)
         {
-            if(Username.Text == "Username")
+            if (Username.Text == "Username")
             {
                 Username.Text = "";
                 Username.ForeColor = Color.Black;
             }
         }
-
         private void Username_LostFocus(object sender, EventArgs e)
         {
-            if(string.IsNullOrEmpty(Username.Text))
+            if (string.IsNullOrEmpty(Username.Text))
             {
                 Username.Text = "Username";
                 Username.ForeColor = Color.Gray;
             }
         }
-
         private void Email_GotFocus(object sender, EventArgs e)
         {
-            if(Email.Text == "Email")
+            if (Email.Text == "Email")
             {
                 Email.Text = "";
                 Email.ForeColor = Color.Black;
             }
         }
-
         private void Email_LostFocus(object sender, EventArgs e)
         {
-            if(string.IsNullOrEmpty(Email.Text))
+            if (string.IsNullOrEmpty(Email.Text))
             {
                 Email.Text = "Email";
                 Email.ForeColor = Color.Gray;
             }
         }
-
         private void VerificationCode_GotFocus(object sender, EventArgs e)
         {
-            if(VerificationCode.Text == "Verification Code")
+            if (VerificationCode.Text == "Verification Code")
             {
                 VerificationCode.Text = "";
                 VerificationCode.ForeColor = Color.Black;
             }
         }
-
         private void VerificationCode_LostFocus(object sender, EventArgs e)
         {
-            if(string.IsNullOrEmpty(VerificationCode.Text))
+            if (string.IsNullOrEmpty(VerificationCode.Text))
             {
                 VerificationCode.Text = "Verification Code";
                 VerificationCode.ForeColor = Color.Gray;
             }
         }
-
         private void Password_GotFocus(object sender, EventArgs e)
         {
-            if(Password.Text == "Password")
+            if (Password.Text == "Password")
             {
                 Password.Text = "";
                 Password.ForeColor = Color.Black;
             }
         }
-
         private void Password_LostFocus(object sender, EventArgs e)
         {
-            if(string.IsNullOrEmpty(Password.Text))
+            if (string.IsNullOrEmpty(Password.Text))
             {
                 Password.Text = "Password";
                 Password.ForeColor = Color.Gray;
@@ -102,89 +155,22 @@ namespace Client
         }
         private void ConfirmPassword_GotFocus(object sender, EventArgs e)
         {
-            if(ConfirmPassword.Text == "Confirm Password")
+            if (ConfirmPassword.Text == "Confirm Password")
             {
                 ConfirmPassword.Text = "";
                 ConfirmPassword.ForeColor = Color.Black;
             }
         }
-
         private void ConfirmPassword_LostFocus(object sender, EventArgs e)
         {
-            if(string.IsNullOrEmpty(ConfirmPassword.Text))
+            if (string.IsNullOrEmpty(ConfirmPassword.Text))
             {
                 ConfirmPassword.Text = "Confirm Password";
                 ConfirmPassword.ForeColor = Color.Gray;
             }
         }
 
-        private async void CheckUsername_Click(object sender, EventArgs e)
-        {
-            string username = Username.Text;
-            if(string.IsNullOrEmpty(username) || username == "Username")
-            {
-                MessageBox.Show("Username을 입력해주세요.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                
 
-            try
-            {
-                Socket s = new Socket();
-                string message = $"CHECK-USERNAME {username}";
-                string res = await s.SendMessageAsync(message);
-
-                var resObj = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(res);
-
-                if(resObj.status == "success" && resObj.message == "A") 
-                {
-                    MessageBox.Show("사용가능한 이름입니다.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else if(resObj.status == "error" && resObj.message == "T")
-                {
-                    MessageBox.Show("사용중인 이름입니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else if(resObj.status == "error" && resObj.message == "UR")
-                {
-                    MessageBox.Show("Username은 필수입니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            catch(Exception ex)
-            {
-
-                MessageBox.Show("Error sending request : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private async void SendEmail_Click(object sender, EventArgs e)
-        {
-
-            string email = Email.Text;
-            if(string.IsNullOrEmpty(email) || email == "Email")
-            {
-                MessageBox.Show("이메일을 입력해주세요.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            try
-            {
-                Socket s = new Socket();
-                string message = $"SEND-EMAIL {email}";
-                string res = await s.SendMessageAsync(message);
-
-                var resObj = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(res);
-                if(resObj.status == "success" && resObj.message == "SE")
-                {
-                    MessageBox.Show("이메일로 인증번호가 전송되었습니다.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else if(resObj.status == "error" && resObj.message == "FS")
-                {
-                    MessageBox.Show("인증번호 전송에 실패했습니다.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            catch(Exception ex)
-            {
-                MessageBox.Show("Error sending request : " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
     }
 }
