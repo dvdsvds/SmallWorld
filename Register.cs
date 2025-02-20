@@ -74,10 +74,11 @@ namespace Client
             HandleResponse("available", "사용 가능한 이름입니다.", "사용중인 이름입니다.");
         }
 
+        private string email;
         private async void SendEmail_Click(object sender, EventArgs e)
         {
 
-            string email = Email.Text;
+            email = Email.Text;
             if (string.IsNullOrEmpty(email) || email == "Email")
             {
                 MessageBox.Show("이메일을 입력해주세요.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -87,6 +88,20 @@ namespace Client
             await HandleMsgAsync(message);
 
             HandleResponse("send code to email", "이메일로 인증번호가 전송되었습니다.", "인증번호 전송에 실패했습니다.");
+        }
+        private async void Confirm_Click(object sender, EventArgs e)
+        {
+            string verification_code = VerificationCode.Text;
+            if(string.IsNullOrEmpty(verification_code) || verification_code == "Verification Code")
+            {
+                MessageBox.Show("인증번호를 입력해주세요.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            message = $"CHECK-CODE {email} {verification_code}";
+            await HandleMsgAsync(message);
+
+            HandleResponse("verified", "인증되었습니다.", "인증번호가 틀립니다.");
         }
 
         private void Username_GotFocus(object sender, EventArgs e)
@@ -169,8 +184,6 @@ namespace Client
                 ConfirmPassword.ForeColor = Color.Gray;
             }
         }
-
-                
 
     }
 }

@@ -113,6 +113,7 @@
             this.Confirm.TabIndex = 7;
             this.Confirm.Text = "Confirm";
             this.Confirm.UseVisualStyleBackColor = true;
+            this.Confirm.Click += new System.EventHandler(this.Confirm_Click);
             // 
             // CheckUsername
             // 
