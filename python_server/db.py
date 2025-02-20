@@ -47,7 +47,15 @@ def get_code(email, code):
         cursor = conn.cursor()
         cursor.execute("select email, code from email_code where email = %s and code = %s", (email, code))
         row = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        return row[1] if row else None
+
+        if row:
+            cursor.execute("delete from email_code where email = %s", (email,))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return row[1]
+        else:
+            cursor.close()
+            conn.close()
+            return None
     return None
