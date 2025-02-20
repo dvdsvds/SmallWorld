@@ -128,30 +128,39 @@ void startSocket() {
         std::string req(buffer);
         logInfo("[REQ] " + req);
 
-        std::string command, username, password;
+        std::string command, username, email, password, code;
         std::istringstream iss(req);
-        iss >> command >> username >> password;
+        iss >> command;
 
         std::string endpoint;
         std::string flaskRes;
         std::string jd;
+
         if(command == "LOGIN") {
+            iss >> email >> password;
             endpoint = "/login";
-             jd = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
+            jd = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
         }
         else if(command == "REGISTER") {
+            iss >> username >> email >> password;
             endpoint = "/register";
-             jd = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
+            jd = "{\"username\":\"" + username + "\", \"email\":\"" + email + "\" ,\"password\":\"" + password + "\"}";
         }
         else if(command == "CHECK-USERNAME") {
             endpoint = "/register/check-username";
             jd = "{\"username\":\"" + username + "\"}";
         } 
         else if(command == "SEND-EMAIL") {
+            iss >> email;
             endpoint = "/register/send-email";
-            std::string email = username;
             jd = "{\"email\":\"" + email + "\"}";
+            std::cout << "email : " << email << std::endl;
         } 
+        else if(command == "CHECK-CODE") {
+            iss >> email >> code;
+            endpoint = "/register/send-email/check-code";
+            jd = "{\"email\":\"" + email + "\", \"code\":\"" + code + "\"}";
+        }
 
         else {
             flaskRes = "INVALID COMMAND";

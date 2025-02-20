@@ -24,7 +24,7 @@ def get_user_name(username):
     conn = get_connection()   
     if conn is not None:
         cursor = conn.cursor()
-        cursor.execute("select id, username, password from user where username = %s", (username,))
+        cursor.execute("select id, username from user where username = %s", (username,))
         user = cursor.fetchall()
         cursor.close()  
         conn.close()  
@@ -40,3 +40,14 @@ def insert_user(username, password):
         conn.commit()
         cursor.close()
         conn.close()
+
+def get_code(email, code):
+    conn = get_connection()
+    if conn is not None:
+        cursor = conn.cursor()
+        cursor.execute("select email, code from email_code where email = %s and code = %s", (email, code))
+        row = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        return row[1] if row else None
+    return None

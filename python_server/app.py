@@ -1,6 +1,6 @@
 import bcrypt
 from flask import Flask, jsonify, request
-from db import get_user_name 
+from db import get_user_name, get_code
 from cEmail import send_code_email
 
 app = Flask(__name__)
@@ -36,7 +36,7 @@ def login():
 @app.route('/register/check-username', methods=['POST'])
 def check_username():
     data = request.get_json()
-    username = data.get('username')
+    username = data['username']
 
     if not username:
         return jsonify({"status": "error", "message": "user required"}), 200
@@ -52,7 +52,7 @@ def check_username():
 @app.route('/register/send-email', methods=['POST'])
 def send_code():
     data = request.get_json()
-    email = data.get('email')
+    email = data['email']
 
     if not email:
         return jsonify({"status": "error", "message": "please enter an email"}), 400
@@ -62,6 +62,26 @@ def send_code():
         return jsonify({"status": "success", "message": "send code to email"}), 200
     else:
         return jsonify({"status": "error", "message": "failed to send email"}), 500
+
+# check verification code API
+@app.route('/register/send-email/check-code', methods=['POST'])
+def check_code():
+    data = request.get_json()
+    print(f"recv : {data}")
+    email = data["email"]
+    code = data["code"]
+
+    if not email or not code:
+        return jsonify({"status": "error", "message": "code is missing from data"}), 400
+
+    stored_code = get_code(email, code)
+    if stored_code is None:
+        return jsonify({"status": "error", "message": "code not found or code expired"}), 404
+
+    if code != stored_code:
+        return jsonify({"status": "error", "message": "invalid code"}), 401
+
+    return jsonify({"status": "success", "message": "verified"}), 200
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
