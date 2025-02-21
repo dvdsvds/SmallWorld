@@ -133,6 +133,7 @@
             this.RegisterDone.TabIndex = 9;
             this.RegisterDone.Text = "Done";
             this.RegisterDone.UseVisualStyleBackColor = true;
+            this.RegisterDone.Click += new System.EventHandler(this.RegisterDone_Click);
             // 
             // Register
             // 
