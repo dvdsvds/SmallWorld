@@ -24,22 +24,31 @@ def get_user_name(username):
     conn = get_connection()   
     if conn is not None:
         cursor = conn.cursor()
-        cursor.execute("select id, username from user where username = %s", (username,))
+        cursor.execute("select username from user where username = %s", (username,))
         user = cursor.fetchall()
         cursor.close()  
         conn.close()  
         return user
     return None
 
-def insert_user(username, password):
+def insert_user(username, email, hashed_password):
     conn = get_connection()
     if conn is not None:
         cursor = conn.cursor()
-        hspwd = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        cursor.execute("insert into user (username, password) values (%s, %s)", (username, hspwd))
-        conn.commit()
-        cursor.close()
-        conn.close()
+        try:
+            cursor.execute("INSERT INTO user (username, email, password) VALUES (%s, %s, %s)", 
+                           (username, email, hashed_password))
+            conn.commit()
+            return True  # 데이터베이스에 삽입 성공
+        except Exception as e:
+            print(f"Error inserting user: {e}")
+            conn.rollback()
+            return False  # 삽입 실패
+        finally:
+            cursor.close()
+            conn.close()
+    return False  # 연결 실패
+
 
 def get_code(email, code):
     conn = get_connection()

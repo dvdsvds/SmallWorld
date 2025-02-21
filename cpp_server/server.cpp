@@ -141,12 +141,14 @@ void startSocket() {
             endpoint = "/login";
             jd = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
         }
-        else if(command == "REGISTER") {
-            iss >> username >> email >> password;
-            endpoint = "/register";
-            jd = "{\"username\":\"" + username + "\", \"email\":\"" + email + "\" ,\"password\":\"" + password + "\"}";
+        else if(command == "DONE") {
+            std::string confirm_password;
+            iss >> username >> email >> password >> confirm_password;
+            endpoint = "/register/done";
+            jd = "{\"username\":\"" + username + "\", \"email\":\"" + email + "\" ,\"password\":\"" + password + "\",\"confirm_password\":\"" + confirm_password + "\"}";
         }
         else if(command == "CHECK-USERNAME") {
+            iss >> username;
             endpoint = "/register/check-username";
             jd = "{\"username\":\"" + username + "\"}";
         } 
@@ -154,11 +156,10 @@ void startSocket() {
             iss >> email;
             endpoint = "/register/send-email";
             jd = "{\"email\":\"" + email + "\"}";
-            std::cout << "email : " << email << std::endl;
         } 
         else if(command == "CHECK-CODE") {
             iss >> email >> code;
-            endpoint = "/register/send-email/check-code";
+            endpoint = "/register/check-code";
             jd = "{\"email\":\"" + email + "\", \"code\":\"" + code + "\"}";
         }
 
