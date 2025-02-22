@@ -1,3 +1,4 @@
+#include <asm-generic/socket.h>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -9,8 +10,9 @@
 
 #define PORT 8080
 
+const char* env_ip = std::getenv("IP");
+std::string ip = (env_ip != nullptr) ? env_ip : "0.0.0.0"; 
 
-const char* ip = std::getenv("IP");
 size_t wcb(void *contents, size_t size, size_t nmemb, std::string *output) {
     size_t ts = size * nmemb;
     output->append((char*)contents, ts);
@@ -29,7 +31,7 @@ bool hReq(const std::string& endpoint, const std::string& jd, std::string& respo
     CURL *curl;
     CURLcode res;
     std::string url = "http://";
-    if(ip != nullptr) {
+    if(ip.c_str() != nullptr) {
         url += ip;
     }
     else {
@@ -84,8 +86,8 @@ void startSocket() {
     memset(&sAddr, 0, sizeof(sAddr));
     sAddr.sin_family = AF_INET;
 
-    if(ip != nullptr) {
-        inet_pton(AF_INET, "192.168.50.246", &sAddr.sin_addr);
+    if(ip.c_str() != nullptr) {
+        inet_pton(AF_INET, ip.c_str(), &sAddr.sin_addr);
     }
     else {
         logError("IP 환경 변수가 설정되지 않았습니다.");
@@ -94,6 +96,8 @@ void startSocket() {
 
     sAddr.sin_port = htons(PORT);
 
+    int opt = 1;
+    setsockopt(sSocket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
     if(bind(sSocket, (struct sockaddr*)&sAddr, sizeof(sAddr)) < 0) {
         logError("바인드 실패");
         close(sSocket);
@@ -120,7 +124,7 @@ void startSocket() {
         ssize_t bytesReceived = recv(cSocket, buffer, sizeof(buffer) - 1, 0);
         if(bytesReceived <= 0) {
             logError("데이터 수신 실패");
-            close(sSocket);
+            close(cSocket);
             continue;
         }
 
@@ -139,7 +143,7 @@ void startSocket() {
         if(command == "LOGIN") {
             iss >> email >> password;
             endpoint = "/login";
-            jd = "{\"username\":\"" + username + "\", \"password\":\"" + password + "\"}";
+            jd = "{\"email\":\"" + email + "\", \"password\":\"" + password + "\"}";
         }
         else if(command == "DONE") {
             std::string confirm_password;
@@ -194,5 +198,7 @@ void startSocket() {
 
 int main() {
     startSocket();
+    std::cout << "서버가 " << ip.c_str() << "에서 실행 중" << std::endl;
     return 0;
+
 }
