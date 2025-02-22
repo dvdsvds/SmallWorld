@@ -62,11 +62,11 @@ namespace Client
             message = $"CHECK-USERNAME {username}";
             await HandleMsgAsync(message);
 
-            if (resObj.status == "success" && resObj.message == "available")
+            if (resObj != null && resObj.status == "success" && resObj.message == "available")
             {
                 MessageBox.Show("사용가능한 이름입니다.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            else if (resObj.status == "error")
+            else if (resObj != null && resObj.status == "error")
             {
                 if (resObj.message == "user required")
                 {

@@ -1,17 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using Microsoft.Extensions.Configuration;
 
 namespace Client
 {
     class Socket
     {
-        private string IP = Environment.GetEnvironmentVariable("SERVER_IP") ?? "localhost";
+        private string IP;       
         private int PORT = 8080;
 
+        public Socket()
+        {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "s.json");
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile(filePath)
+                .Build();
+
+            IP = config["ServerSetting:IP"];
+
+
+            if (string.IsNullOrEmpty(IP))
+            {
+                MessageBox.Show("IP 오류");
+            }
+        }
         public async Task<string> SendMessageAsync(string message)
         {
             try
