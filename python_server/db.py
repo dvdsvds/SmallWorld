@@ -1,4 +1,5 @@
 import mysql.connector
+import logging
 import bcrypt
 from dotenv import load_dotenv
 import os
@@ -68,3 +69,28 @@ def get_code(email, code):
             conn.close()
             return None
     return None
+
+def get_user(email, password):
+    conn = get_connection()
+    if conn is None:
+        logging.error("Database connection failed")
+        return None
+
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT id, email, password FROM user WHERE email = %s", (email,))
+            row = cursor.fetchone()
+            if row:
+                stored_password = row[2]  # 데이터베이스에서 가져온 해시된 비밀번호
+                if isinstance(stored_password, str):
+                    stored_password = stored_password.encode("utf-8")  # 문자열이면 바이트로 변환
+
+                if bcrypt.checkpw(password.encode("utf-8"), stored_password):
+                    return {"id": row[0], "email": row[1]}
+            return None
+    except Exception as e:
+        logging.error(f"Database error: {e}")
+        return None
+    finally:
+        conn.close()
+

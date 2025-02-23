@@ -142,7 +142,7 @@ void startSocket() {
 
         if(command == "LOGIN") {
             iss >> email >> password;
-            endpoint = "/login";
+            endpoint = "/login/attempt";
             jd = "{\"email\":\"" + email + "\", \"password\":\"" + password + "\"}";
         }
         else if(command == "DONE") {

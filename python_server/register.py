@@ -1,5 +1,5 @@
 import bcrypt
-from flask import Blueprint, config, jsonify, request
+from flask import Blueprint, jsonify, request
 from db import get_user_name, get_code, insert_user
 from cEmail import send_code_email
 
