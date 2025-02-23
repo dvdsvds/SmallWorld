@@ -12,7 +12,7 @@ namespace Client
 {
     class Socket
     {
-        private string IP;       
+        private string IP;
         private int PORT = 8080;
 
         public Socket()
@@ -43,14 +43,14 @@ namespace Client
                     byte[] data = Encoding.UTF8.GetBytes(message);
                     await stream.WriteAsync(data, 0, data.Length);
 
-                    byte[] buffer = new byte[1024];
+                    byte[] buffer = new byte[4096];
                     int bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length);
                     string res = Encoding.UTF8.GetString(buffer, 0, bytesRead);
 
                     return res;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return $"Error: {ex.Message}";
             }

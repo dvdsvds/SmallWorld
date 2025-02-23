@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.Username = new System.Windows.Forms.TextBox();
+            this.Email = new System.Windows.Forms.TextBox();
             this.Password = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.FindAccountBtn = new System.Windows.Forms.Button();
@@ -37,14 +37,14 @@
             this.RememberEmail = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
-            // Username
+            // Email
             // 
-            this.Username.ForeColor = System.Drawing.Color.Gray;
-            this.Username.Location = new System.Drawing.Point(12, 32);
-            this.Username.Name = "Username";
-            this.Username.Size = new System.Drawing.Size(226, 21);
-            this.Username.TabIndex = 0;
-            this.Username.Text = "Username or Email";
+            this.Email.ForeColor = System.Drawing.Color.Gray;
+            this.Email.Location = new System.Drawing.Point(12, 32);
+            this.Email.Name = "Email";
+            this.Email.Size = new System.Drawing.Size(226, 21);
+            this.Email.TabIndex = 0;
+            this.Email.Text = "Email";
             // 
             // Password
             // 
@@ -92,6 +92,7 @@
             this.LoginBtn.TabIndex = 5;
             this.LoginBtn.Text = "Login";
             this.LoginBtn.UseVisualStyleBackColor = true;
+            this.LoginBtn.Click += new System.EventHandler(this.LoginBtn_Click);
             // 
             // RememberEmail
             // 
@@ -114,7 +115,7 @@
             this.Controls.Add(this.FindAccountBtn);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.Password);
-            this.Controls.Add(this.Username);
+            this.Controls.Add(this.Email);
             this.Name = "Login";
             this.Text = "Login";
             this.ResumeLayout(false);
@@ -124,7 +125,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox Username;
+        private System.Windows.Forms.TextBox Email;
         private System.Windows.Forms.TextBox Password;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button FindAccountBtn;
