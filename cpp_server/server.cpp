@@ -50,8 +50,8 @@ bool hReq(const std::string& endpoint, const std::string& jd, std::string& respo
         curl_easy_setopt(curl, CURLOPT_POSTFIELDS, jd.c_str());
         curl_easy_setopt(curl, CURLOPT_HTTPHEADER, h);
 
+
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, wcb);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
         res = curl_easy_perform(curl);
 
@@ -198,7 +198,6 @@ void startSocket() {
 
 int main() {
     startSocket();
-    std::cout << "서버가 " << ip.c_str() << "에서 실행 중" << std::endl;
     return 0;
 
 }
